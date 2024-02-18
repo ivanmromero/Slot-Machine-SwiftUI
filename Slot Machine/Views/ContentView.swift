@@ -55,6 +55,48 @@ struct ContentView: View {
                 }
                 
                 // MARK: - SLOT MACHINE
+                VStack(alignment: .center, spacing: 0) {
+                    // MARK: - REEL 1
+                    ZStack {
+                        ReelView()
+                        Image(.gfxBell)
+                            .resizable()
+                            .modifier(ImageModifier())
+                    }
+                    
+                    HStack(alignment: .center, spacing: 0, content: {
+                        // MARK: - REEL 2
+                        ZStack {
+                            ReelView()
+                            Image(.gfxSeven)
+                                .resizable()
+                                .modifier(ImageModifier())
+                        }
+                        
+                        Spacer()
+                        
+                        // MARK: - REEL 3
+                        ZStack {
+                            ReelView()
+                            Image(.gfxCherry)
+                                .resizable()
+                                .modifier(ImageModifier())
+                        }
+                    })
+                    .frame(maxWidth: 500)
+                    
+                    // MARK: - SPIN BUTTON
+                    Button(action: {
+                        
+                    }, label: {
+                        Image(.gfxSpin)
+                            .renderingMode(.original)
+                            .resizable()
+                            .modifier(ImageModifier())
+                    })
+                }
+                .layoutPriority(2)
+                
                 // MARK: - FOOTER
                 
                 Spacer()
