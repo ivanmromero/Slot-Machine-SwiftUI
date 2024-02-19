@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var betAmoumt: Int = 10
     @State private var isActiveBet10: Bool = true
     @State private var isActiveBet20: Bool = false
+    @State private var showingModal:Bool = false
     
     // MARK: - FUNCTIONS
     // SPIN THE REELS
@@ -73,6 +74,12 @@ struct ContentView: View {
     }
     
     // GAME IS OVER
+    private func isGameOver() {
+        if coins <= 0 {
+            // SHOW MODAL
+            showingModal = true
+        }
+    }
     
     // MARK: - BODY
     var body: some View {
@@ -156,6 +163,9 @@ struct ContentView: View {
                         
                         // CHECK WINNING
                         checkWinning()
+                        
+                        // CHECK GAME IS OVER
+                        isGameOver()
                     }, label: {
                         Image(.gfxSpin)
                             .renderingMode(.original)
@@ -230,6 +240,65 @@ struct ContentView: View {
             })
             .padding()
             .frame(maxWidth: 720)
+            .blur(radius: showingModal ? 5 : 0, opaque: false)
+            
+            // MARK: - POPUP
+            if showingModal {
+                ZStack {
+                    Color.colorTransparentBlack
+                        .ignoresSafeArea()
+                    
+                    // MODAL
+                    VStack(alignment: .center, spacing: 16, content: {
+                        // TITLE
+                        Text("GAME OVER")
+                            .font(.system(.title, design: .rounded, weight: .heavy))
+                            .padding()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .background(.colorPink)
+                            .foregroundStyle(.white)
+                        
+                        Spacer()
+                        
+                        Image(.gfxSevenReel)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 72)
+                        
+                        Text("Bad Luck! You lost all of the coins. \nLet´s play again!")
+                            .font(.system(.body, design: .rounded))
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.gray)
+                            .layoutPriority(1)
+                        
+                        Button {
+                            showingModal = false
+                            coins = 100
+                        } label: {
+                            Text("New Game".uppercased())
+                                .font(.system(.body, design: .rounded, weight: .semibold))
+                                .tint(.colorPink)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .frame(minWidth: 128)
+                                .background {
+                                    Capsule()
+                                        .strokeBorder(lineWidth: 1.75)
+                                        .foregroundStyle(.colorPink)
+                                }
+                        }
+
+                        
+                        Spacer()
+                    })
+                    .frame(minWidth: 280, idealWidth: 280, maxWidth: 320, minHeight: 260, idealHeight: 280, maxHeight: 320, alignment: .center)
+                    .background(.white)
+                    .clipShape(.rect(cornerRadius: 20))
+                    .shadow(color: .colorTransparentBlack, radius: 6, x: 0, y: 8)
+                    
+                }
+            }
         }
         .sheet(isPresented: $showingInfoView, content: {
             InfoView()
